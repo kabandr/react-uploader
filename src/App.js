@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { mostFrequent } from './utils/mostFrequent'
 
-function App() {
+import "./index.css"
+
+const App = () => {
+  const [result, setResult] = useState("")
+
+  const handleUpload = async (e) => {
+    e.preventDefault()
+
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+
+      const text = (e.target.result)
+      const list = text.split(/\r?\n/).map(n => parseInt(n))
+
+      let arraySize = list.length
+      let mostOccurring = 5
+
+      let solution = mostFrequent(list, arraySize, mostOccurring)
+      setResult(solution)
+    };
+
+    reader.readAsText(e.target.files[0])
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <div>
+      <h1 className='title'>Upload File</h1>
+
+      <div className='upload-card'>
+        <input type="file" onChange={handleUpload} />
+        <p className="main">Supported files</p>
+        <p className="info">TXT</p>
+      </div>
+
+      {result.split("\n").map((item, key) => {
+        return <div key={key}>{item}</div>;
+      })}
+    </div>)
 }
 
 export default App;
